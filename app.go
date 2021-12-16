@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io/ioutil"
     "os"
+	"math/rand"
 )
 
 type AppConfig struct {
@@ -14,6 +15,17 @@ type AppConfig struct {
     Port   	   string    `json:"port"`
 	Allowed    string    `json:"allowed"`
 }
+
+
+func randomStringSequence(n int) string {
+	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    b := make([]rune, n)
+    for i := range b {
+        b[i] = letters[rand.Intn(len(letters))]
+    }
+    return string(b)
+}
+
 
 func appShutdown() {
     fmt.Println("Shutting down...")
@@ -41,7 +53,7 @@ func main() {
 	router.SetTrustedProxies([]string{config.Allowed})
 	
 
-	router.GET("/uptime", func(c *gin.Context) {
+	router.GET("/probe", func(c *gin.Context) {
 
 		// fmt.Printf("ClientIP: %s\n", c.ClientIP())
 		
@@ -49,7 +61,8 @@ func main() {
 		verbtime := int64(uptime) / int64(time.Second)
 
 		c.JSON(200, gin.H{
-			"resource": "uptime",
+			"resource": config.Resource,
+			"random": randomStringSequence(8),
 			"uptime": verbtime,
 		})
 	})
