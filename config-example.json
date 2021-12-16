@@ -1,0 +1,5 @@
+{
+    "resource": "dev-macbook",
+    "port": "8999",
+    "allowed": "127.0.0.1"
+}
